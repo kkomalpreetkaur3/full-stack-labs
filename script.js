@@ -1,0 +1,121 @@
+const departments = [
+    {
+        name: "Administration",
+        employees: [
+            { firstName: "Zoë", lastName: "Robins" },
+            { firstName: "Madeleine", lastName: "Madden" }
+        ]
+    },
+    {
+        name: "Audit",
+        employees: [
+            { firstName: "Josha", lastName: "Sadowski" },
+            { firstName: "Kate", lastName: "Fleetwood" }
+        ]
+    },
+    {
+        name: "Banking Operations",
+        employees: [
+            { firstName: "Priyanka", lastName: "Bose" },    
+            { firstName: "Hammed", lastName: "Animashaun" },
+            { firstName: "Álvaro", lastName: "Morte" },
+            { firstName: "Taylor", lastName: "Napier" },
+            { firstName: "Alan", lastName: "Simmonds" }
+        ]
+    },
+    {
+        name: "Communications",
+        employees: [
+            { firstName: "Gil", lastName: "Cardinal" },
+            { firstName: "Richard", lastName: "J. Lewis" }
+        ]
+    },
+    {
+        name: "Corporate Services",
+        employees: [
+            { firstName: "Randy", lastName: "Bradshaw" },
+            { firstName: "Tracey", lastName: "Cook" },
+            { firstName: "Lubomir", lastName: "Mykytiuk" }
+        ]
+    },
+    {
+        name: "Facilities",
+        employees: [
+            { firstName: "Dakota", lastName: "House" },
+            { firstName: "Lori", lastName: "Lea Okemah" },
+            { firstName: "Renae", lastName: "Morrisseau" },
+            { firstName: "Rick", lastName: "Belcourt" }
+        ] 
+    },
+    {
+        name: "Financial Services",
+        employees: [
+            { firstName: "Selina", lastName: "Hanusa" },
+            { firstName: "Buffy", lastName: "Gaudry" },
+            { firstName: "Shaneen", lastName: "Ann Fox" },
+            { firstName: "Allan", lastName: "Little" },
+            { firstName: "Danny", lastName: "Rabbit" }
+        ]
+    },
+    {
+        name: "Human Resources",
+        employees: [
+            { firstName: "Jesse", lastName: "Ed Azure" },
+            { firstName: "Stacy", lastName: "Da Silva" },
+            { firstName: "Vladimír", lastName: "Valenta" },
+            { firstName: "Samone", lastName: "Sayeses-Whitney" },
+            { firstName: "Paul", lastName: "Coeur" }
+        ]
+    },
+    {
+        name: "Information Technology",
+        employees: [
+            { firstName: "Graham", lastName: "Greene" },
+            { firstName: "Sandika", lastName: "Evergreen" },
+            { firstName: "Jennifer", lastName: "Rodriguez" }
+        ]
+    },
+    {
+        name: "IT Technician",
+        employees: [
+            { firstName: "Aiyana", lastName: "Littlebear" },
+            { firstName: "Inara", lastName: "Thunderbird" },
+            { firstName: "Kaya", lastName: "Runningbrook" },
+            { firstName: "Elara", lastName: "Firehawk" },
+            { firstName: "Siona", lastName: "Moonflower" },
+            { firstName: "Kaiyu", lastName: "Greywolf" },
+            { firstName: "Ayawamat", lastName: "Nightwind" },
+            { firstName: "Tala", lastName: "Braveheart" },
+            { firstName: "Iniko", lastName: "Stonebear" },
+            { firstName: "Onatah", lastName: "Redhawk" }
+        ]
+    }
+];
+
+document.addEventListener("DOMContentLoaded", () => {
+    const currentYear = document.querySelector("#current-year");
+    currentYear.textContent = new Date().getFullYear();
+
+    const main = document.querySelector("main");
+
+    departments.forEach((department) => {
+        const section = document.createElement("section");
+
+        const heading = document.createElement("h2");
+        heading.textContent = department.name;
+
+        section.appendChild(heading);
+
+        const employeeList = document.createElement("ul");
+
+        department.employees.forEach((employee) => {
+            const listItem = document.createElement("li");
+            listItem.textContent = `${employee.firstName} ${employee.lastName}`;
+
+            employeeList.appendChild(listItem);
+        });
+        
+        section.appendChild(employeeList);
+        main.appendChild(section);
+    });
+});

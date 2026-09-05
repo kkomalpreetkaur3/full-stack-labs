@@ -1,0 +1,40 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+header img {
+    width: 100px;
+    height: auto;
+}
+
+header div {
+    margin-left: 20px;
+}
+
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+section h2 {
+    margin-top: 0;
+}
+
+section ul {
+    margin-bottom: 0;
+}
+
+footer {
+    padding: 20px;
+}
+
