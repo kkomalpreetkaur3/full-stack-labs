@@ -1,10 +1,12 @@
 import type { Employee } from '../types/Employee'
-import employeesData from '../data/employees.json'
 
-const employees: Employee[] = employeesData
-const departments = [...new Set(employees.map(employee => employee.department))]
+interface EmployeeDirectoryProps {
+    employees: Employee[]
+}
 
-export function EmployeeDirectory() {
+export function EmployeeDirectory({ employees }: EmployeeDirectoryProps) {
+    const departments = [...new Set(employees.map(employee => employee.department))]
+    
     return (
     <main>
         {departments.map(department => (
