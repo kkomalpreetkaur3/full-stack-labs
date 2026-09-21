@@ -24,3 +24,9 @@ section {
 footer {
   padding: 20px;
 }
+
+.organization-row {
+  display: flex;
+  justify-content: space-between;
+}
+
