@@ -1,5 +1,7 @@
-import { useState, type SubmitEvent } from 'react'
+import type { SubmitEvent } from 'react'
 import type { Employee } from '../types/Employee'
+import { useFormInput } from '../hooks/useFormInput'
+import { employeeService } from '../services/employeeService'
 
 interface EmployeeFormProps {
     departments: string[]
@@ -7,28 +9,35 @@ interface EmployeeFormProps {
 }
 
 export function EmployeeForm({ departments, onAddEmployee }: EmployeeFormProps) {
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [department, setDepartment] = useState(departments[0] ?? '')
-    const [validationMessage, setValidationMessage] = useState('')
+    const firstName = useFormInput('')
+    const lastName = useFormInput('')
+    const department = useFormInput(departments[0] ?? '')
 
     function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault()
-        setValidationMessage('')
-        
-        if (firstName.trim().length < 3) {
-            setValidationMessage('First name must be at least 3 characters.')
+
+        const employee: Employee = {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            department: department.value
+        }
+
+        // Service checks the employee information
+        const result = employeeService.createEmployee(employee)
+
+        // Hook updates the validation messages
+        firstName.validate(() => result.errors.firstName)
+        department.validate(() => result.errors.department)
+
+        if (!result.success || !result.employee) {
             return
         }
 
-        onAddEmployee({
-            firstName: firstName.trim(),
-            lastName: lastName.trim(),
-            department: department
-        })
+        onAddEmployee(result.employee)
 
-        setFirstName('')
-        setLastName('')
+        firstName.reset()
+        lastName.reset()
+        department.setMessages([])
     }
 
     return (
@@ -39,32 +48,38 @@ export function EmployeeForm({ departments, onAddEmployee }: EmployeeFormProps) 
             <input
                 type="text"
                 id="firstName"
-                value={firstName}
-                onChange={(event) => setFirstName(event.target.value)}
+                value={firstName.value}
+                onChange={(event) => firstName.setValue(event.target.value)}
             />
 
-            {validationMessage && <p>{validationMessage}</p>}
+            {firstName.messages.map((message, index) => (
+                <p key={index}>{message}</p>
+            ))}
 
             <label htmlFor="lastName">Last Name:</label>
             <input
                 type="text"
                 id="lastName"
-                value={lastName}
-                onChange={(event) => setLastName(event.target.value)}
+                value={lastName.value}
+                onChange={(event) => lastName.setValue(event.target.value)}
             />
 
             <label htmlFor="department">Department:</label>
             <select
                 id="department"
-                value={department}
-                onChange={(event) => setDepartment(event.target.value)}
+                value={department.value}
+                onChange={(event) => department.setValue(event.target.value)}
             >
-                {departments.map(department => (
-                    <option key={department} value={department}>
-                        {department}
+                {departments.map((departmentName) => (
+                    <option key={departmentName} value={departmentName}>
+                        {departmentName}
                     </option>
                 ))}
             </select>
+
+            {department.messages.map((message, index) => (
+                <p key={index}>{message}</p>
+            ))}
 
             <button type="submit">Add Employee</button>
         </form>
