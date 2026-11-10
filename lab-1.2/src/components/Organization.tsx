@@ -1,15 +1,24 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Role } from '../types/Role'
 import { organizationService } from '../services/organizationService'
 import { OrganizationForm } from './OrganizationForm'
 
 export function Organization() {
-    // Get organization records through the service
-    const [roles, setRoles] = useState<Role[]>(
-        () => organizationService.getRoles()
-    )
+    const [roles, setRoles] = useState<Role[]>([])
 
-    // Update the displayed list when a new role is created
+    useEffect(() => {
+        async function loadRoles() {
+            try {
+                const data = await organizationService.getRoles()
+                setRoles(data)
+            } catch (error) {
+                console.error('Failed to load organization roles:', error)
+            }
+        }
+
+        loadRoles()
+    }, [])
+
     function addRole(person: Role) {
         setRoles(currentRoles => [...currentRoles, person])
     }

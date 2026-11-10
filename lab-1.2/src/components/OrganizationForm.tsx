@@ -12,7 +12,7 @@ export function OrganizationForm({ onAddRole }: OrganizationFormProps) {
     const lastName = useFormInput('')
     const role = useFormInput('')
 
-    function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+    async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault()
 
         const person: Role = {
@@ -21,25 +21,25 @@ export function OrganizationForm({ onAddRole }: OrganizationFormProps) {
             role: role.value
         }
 
-        // Service validates and saves the organization record
-        const result = organizationService.createRole(person)
+        try {
+            const result = await organizationService.createRole(person)
 
-        // Reuse the custom hook to display validation errors
-        firstName.validate(() => result.errors.firstName)
-        lastName.validate(() => result.errors.lastName)
-        role.validate(() => result.errors.role)
+            firstName.validate(() => result.errors.firstName)
+            lastName.validate(() => result.errors.lastName)
+            role.validate(() => result.errors.role)
 
-        if (!result.success || !result.person) {
-            return
+            if (!result.success || !result.person) {
+                return
+            }
+
+            onAddRole(result.person)
+
+            firstName.reset()
+            lastName.reset()
+            role.reset()
+        } catch (error) {
+            console.error('Failed to create organization role:', error)
         }
-
-        // Update the Organization page
-        onAddRole(result.person)
-
-        // Clear the form after successful submission
-        firstName.reset()
-        lastName.reset()
-        role.reset()
     }
 
     return (

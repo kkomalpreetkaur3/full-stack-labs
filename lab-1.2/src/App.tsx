@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 
@@ -13,13 +13,22 @@ import type { Employee } from './types/Employee'
 import { employeeService } from './services/employeeService'
 
 function App() {
-  const [employees, setEmployees] = useState<Employee[]>(
-    () => employeeService.getEmployeeData().employees
-  )
+  const [employees, setEmployees] = useState<Employee[]>([])
+  const [departments, setDepartments] = useState<string[]>([])
 
-  const [departments] = useState<string[]>(
-    () => employeeService.getEmployeeData().departments
-  )
+  useEffect(() => {
+    async function loadEmployeeData() {
+      try {
+        const data = await employeeService.getEmployeeData()
+        setEmployees(data.employees)
+        setDepartments(data.departments)
+      } catch (error) {
+        console.error('Failed to load employee data:', error)
+      }
+    }
+
+    loadEmployeeData()
+  }, [])
 
   function addEmployee(employee: Employee) {
     setEmployees(currentEmployees => [...currentEmployees, employee])
