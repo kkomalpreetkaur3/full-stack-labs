@@ -1,23 +1,39 @@
 import type { Employee } from '../types/Employee'
-import employeesData from '../data/employees.json'
 
-let employees: Employee[] = [...employeesData]
+const API_URL = 'http://localhost:3000/api/employees'
 
 export const employeeRepo = {
-    getEmployees(): Employee[] {
-        return [...employees]
+    async getEmployees(): Promise<Employee[]> {
+        const response = await fetch(API_URL)
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch employees.')
+        }
+
+        const data = await response.json()
+        return data.employees
     },
 
-    getDepartments(): string[] {
-        return [...new Set(employees.map(employee => employee.department))]
+    async getDepartments(): Promise<string[]> {
+        const response = await fetch(API_URL)
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch departments.')
+        }
+
+        const data = await response.json()
+        return data.departments
     },
 
-    createEmployee(employee: Employee): Employee {
-        employees.push(employee)
-        return employee
-    },
+    async createEmployee(employee: Employee) {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(employee)
+        })
 
-    getEmployeesByDepartment(department: string): Employee[] {
-        return employees.filter(employee => employee.department === department)
+        return response.json()
     }
 }
