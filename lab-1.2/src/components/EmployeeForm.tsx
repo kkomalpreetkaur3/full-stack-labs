@@ -13,7 +13,7 @@ export function EmployeeForm({ departments, onAddEmployee }: EmployeeFormProps) 
     const lastName = useFormInput('')
     const department = useFormInput(departments[0] ?? '')
 
-    function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+    async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault()
 
         const employee: Employee = {
@@ -22,22 +22,24 @@ export function EmployeeForm({ departments, onAddEmployee }: EmployeeFormProps) 
             department: department.value
         }
 
-        // Service checks the employee information
-        const result = employeeService.createEmployee(employee)
+        try {
+            const result = await employeeService.createEmployee(employee)
 
-        // Hook updates the validation messages
-        firstName.validate(() => result.errors.firstName)
-        department.validate(() => result.errors.department)
+            firstName.validate(() => result.errors.firstName)
+            department.validate(() => result.errors.department)
 
-        if (!result.success || !result.employee) {
-            return
+            if (!result.success || !result.employee) {
+                return
+            }
+
+            onAddEmployee(result.employee)
+
+            firstName.reset()
+            lastName.reset()
+            department.setMessages([])
+        } catch (error) {
+            console.error('Failed to create employee:', error)
         }
-
-        onAddEmployee(result.employee)
-
-        firstName.reset()
-        lastName.reset()
-        department.setMessages([])
     }
 
     return (

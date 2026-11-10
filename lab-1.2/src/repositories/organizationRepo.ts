@@ -1,55 +1,27 @@
 import type { Role } from '../types/Role'
-import rolesData from '../data/roles.json'
 
-let roles: Role[] = [...rolesData]
+const API_URL = 'http://localhost:3000/api/roles'
 
 export const organizationRepo = {
-    // Get all organization records
-    getRoles(): Role[] {
-        return [...roles]
-    },
+    async getRoles(): Promise<Role[]> {
+        const response = await fetch(API_URL)
 
-    // Find a person by their role
-    getRole(roleName: string): Role | undefined {
-        return roles.find(
-            person =>
-                person.role.toLowerCase() === roleName.toLowerCase()
-        )
-    },
-
-    // Add a new person with a role
-    createRole(person: Role): Role {
-        roles.push(person)
-        return person
-    },
-
-    // Update an existing organization record
-    updateRole(oldRoleName: string, updatedPerson: Role): boolean {
-        const index = roles.findIndex(
-            person =>
-                person.role.toLowerCase() === oldRoleName.toLowerCase()
-        )
-
-        if (index === -1) {
-            return false
+        if (!response.ok) {
+            throw new Error('Failed to fetch organization roles.')
         }
 
-        roles[index] = updatedPerson
-        return true
+        return response.json()
     },
 
-    // Delete an organization record
-    deleteRole(roleName: string): boolean {
-        const index = roles.findIndex(
-            person =>
-                person.role.toLowerCase() === roleName.toLowerCase()
-        )
+    async createRole(person: Role) {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(person)
+        })
 
-        if (index === -1) {
-            return false
-        }
-
-        roles.splice(index, 1)
-        return true
+        return response.json()
     }
 }
